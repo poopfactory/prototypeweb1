@@ -12,9 +12,12 @@ dist
 dist-ssr
 *.local
 
-# Personal local tracks (copyrighted audio, not shipped with the project)
+# Personal local tracks (copies of commercial songs, not shipped with the
+# project) - the exception is demo-tape.mp3, the project owner's own
+# original track, which ships with the repo.
 public/tracks/*
 !public/tracks/.gitkeep
+!public/tracks/ddonghouse-130.mp3
 
 # Editor directories and files
 .vscode/*
