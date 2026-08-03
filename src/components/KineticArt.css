@@ -1,0 +1,18 @@
+/* No panel box on purpose - the sculpture floats directly on the page's
+   near-black background, filling the center with presence instead of
+   sitting inside a bordered card. */
+.kinetic-art {
+  position: relative;
+  flex: 1;
+  min-height: 320px;
+  width: 100%;
+}
+
+.kinetic-art__canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* The glow "the effect is lit up" look - two soft bloom passes, tight
+     and wide, both in the point color. */
+  filter: drop-shadow(0 0 18px rgba(180, 255, 60, 0.35)) drop-shadow(0 0 70px rgba(180, 255, 60, 0.18));
+}

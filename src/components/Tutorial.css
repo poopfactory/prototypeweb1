@@ -1,0 +1,102 @@
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 9, 7, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.tutorial-card {
+  position: relative;
+  width: min(480px, 100%);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 24px;
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  box-shadow: 0 30px 80px -20px #000000cc, var(--shadow-glass);
+  overflow: hidden;
+}
+
+.tutorial-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg, var(--glass-highlight), transparent 40%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.tutorial-card__progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.tutorial-card__dot {
+  width: 24px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.tutorial-card__dot--active {
+  background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.tutorial-card h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.tutorial-card p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.tutorial-card__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.tutorial-card__nav {
+  display: flex;
+  gap: 8px;
+}
+
+.tutorial-card__ghost {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.tutorial-card__primary {
+  background: var(--accent-left);
+  border: none;
+  color: #10131a;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}

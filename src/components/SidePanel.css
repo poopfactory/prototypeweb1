@@ -1,0 +1,223 @@
+.side-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  box-shadow: var(--shadow-glass);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.side-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg, var(--glass-highlight), transparent 40%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.side-panel__title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-bright);
+  padding-bottom: 10px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.side-panel__subtitle {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+}
+
+.side-panel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.side-panel__dot--left {
+  background: var(--accent-left);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.side-panel__dot--right {
+  background: var(--accent-right);
+  box-shadow: 0 0 8px var(--accent-glow-right);
+}
+
+.side-panel__note {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  margin-top: auto;
+  opacity: 0.75;
+}
+
+.gesture-card {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-raised);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.side-panel--left .gesture-card:hover {
+  border-color: var(--accent-left);
+  transform: translateY(-1px);
+}
+
+.side-panel--right .gesture-card:hover {
+  border-color: var(--accent-right);
+  transform: translateY(-1px);
+}
+
+.side-panel--left .gesture-card--active {
+  border-top-color: var(--accent-left);
+  box-shadow: 0 0 0 1px var(--accent-left), 0 0 22px var(--accent-glow);
+}
+
+.side-panel--right .gesture-card--active {
+  border-top-color: var(--accent-right);
+  box-shadow: 0 0 0 1px var(--accent-right), 0 0 22px var(--accent-glow-right);
+}
+
+.gesture-card__title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-bright);
+  margin: 0;
+}
+
+.gesture-card__button {
+  /* Minimum 44px touch target, even though the visible label is one line -
+     padding carries the hit area, not the type size. */
+  min-height: 44px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text-bright);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 0;
+}
+
+.gesture-card__button:hover {
+  color: var(--accent-left);
+}
+
+.side-panel--right .gesture-card__button:hover {
+  color: var(--accent-right);
+}
+
+.gesture-card__hint {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.3px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.readout {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.gesture-card__slider-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.3px;
+  color: var(--text-dim);
+}
+
+.gesture-card__slider {
+  width: 100%;
+  accent-color: var(--accent-left);
+}
+
+.side-panel--right .gesture-card__slider {
+  accent-color: var(--accent-right);
+}
+
+.volume-gauge {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.volume-gauge__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+}
+
+.volume-gauge__value {
+  font-size: 13px;
+  color: var(--text-bright);
+  letter-spacing: 0;
+}
+
+.volume-gauge__track {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Fader-scale ticks under the fill, like a physical channel-strip meter. */
+.volume-gauge__ticks {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent 9%, var(--border) 9%, var(--border) calc(9% + 1px));
+  pointer-events: none;
+}
+
+.volume-gauge__fill {
+  height: 100%;
+  background: var(--accent-left);
+  box-shadow: 0 0 8px var(--accent-glow);
+  transition: width 90ms linear;
+}

@@ -1,0 +1,173 @@
+/* Small floating widget, not a full-size hero panel - default anchored to
+   the bottom-right corner, freely draggable anywhere on screen from there. */
+.camera-view {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  width: clamp(150px, 18vw, 220px);
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 0 0 1px #00000060, 0 16px 40px -16px #000000e0, 0 0 0 6px rgba(180, 255, 60, 0.05);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: box-shadow 200ms ease;
+}
+
+.camera-view--locked {
+  box-shadow: 0 0 0 1px #00000060, 0 16px 40px -16px #000000e0, 0 0 24px var(--led-ok-glow);
+}
+
+.camera-view:active {
+  cursor: grabbing;
+}
+
+.camera-view__video {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.camera-view__canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* A faint vignette + scanline, like reading a viewfinder rather than a
+   webcam widget - the one deliberate atmosphere effect on this page. */
+.camera-view__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0, 0, 0, 0.12) 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* Viewfinder corner brackets - the signature element. Quiet dimmed accent at
+   rest; brighten and pull tight toward the frame edge the instant any
+   pinch is recognized, so the "lock" reads as a physical response. */
+.camera-view__bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent);
+  opacity: 0.45;
+  transition: opacity 160ms ease, transform 160ms ease, border-color 160ms ease;
+  pointer-events: none;
+}
+
+.camera-view__bracket--tl {
+  top: 6px;
+  left: 6px;
+  border-right: none;
+  border-bottom: none;
+}
+.camera-view__bracket--tr {
+  top: 6px;
+  right: 6px;
+  border-left: none;
+  border-bottom: none;
+}
+.camera-view__bracket--bl {
+  bottom: 6px;
+  left: 6px;
+  border-right: none;
+  border-top: none;
+}
+.camera-view__bracket--br {
+  bottom: 6px;
+  right: 6px;
+  border-left: none;
+  border-top: none;
+}
+
+.camera-view--locked .camera-view__bracket {
+  opacity: 1;
+  border-color: var(--led-ok);
+}
+.camera-view--locked .camera-view__bracket--tl {
+  transform: translate(2px, 2px);
+}
+.camera-view--locked .camera-view__bracket--tr {
+  transform: translate(-2px, 2px);
+}
+.camera-view--locked .camera-view__bracket--bl {
+  transform: translate(2px, -2px);
+}
+.camera-view--locked .camera-view__bracket--br {
+  transform: translate(-2px, -2px);
+}
+
+/* Drag affordance - a small grip dot row, hinting the panel moves. */
+.camera-view__drag-grip {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+.camera-view__hud {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  color: var(--text);
+  background: rgba(19, 18, 16, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 2px 6px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.camera-view__lock {
+  color: var(--text-dim);
+}
+
+.camera-view__lock--on {
+  color: var(--led-ok);
+  text-shadow: 0 0 6px var(--led-ok-glow);
+}
+
+.camera-view__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  background: rgba(19, 18, 16, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-bright);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+@media (max-width: 560px) {
+  .camera-view {
+    width: 128px;
+    right: 12px;
+    bottom: 12px;
+  }
+}

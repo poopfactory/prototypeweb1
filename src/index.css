@@ -1,0 +1,133 @@
+:root {
+  /* Brand palette: near-black base, single acid-lime point color. */
+  --bg: #060606;
+  --text: #d4d4d4;
+  --text-dim: #8a8a8a;
+  --text-bright: #f5f5f5;
+
+  /* Glass surfaces - translucent fills over the ambient glow orbs behind
+     them, frosted with backdrop-filter wherever they're used. "Raised" is
+     a lighter glass-on-glass overlay (white-alpha), not a solid shade. */
+  --glass-blur: 22px;
+  --bg-panel: rgba(18, 18, 18, 0.55);
+  --bg-raised: rgba(255, 255, 255, 0.055);
+  --border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.14);
+  --shadow-glass: 0 20px 50px -18px rgba(0, 0, 0, 0.6);
+
+  /* One point color used everywhere for "on / active / focus" - Deck L and
+     Deck R are told apart by position and label, not by hue. */
+  --accent: #b4ff3c;
+  --accent-left: var(--accent);
+  --accent-right: var(--accent);
+  --accent-glow: rgba(180, 255, 60, 0.28);
+  --accent-glow-right: var(--accent-glow);
+  --accent-secondary: #7c5cff;
+
+  /* Warning/error stay semantically distinct from the point color - a
+     denied-camera message in lime would read as "good", not "wrong". */
+  --accent-warn: #ffcc4d;
+  --accent-danger: #ff4d6a;
+
+  /* System-status LED reuses the point color - one accent, one meaning. */
+  --led-ok: var(--accent);
+  --led-ok-glow: var(--accent-glow);
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --sans: 'Space Grotesk', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  font: 15px/1.5 var(--sans);
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(640px 520px at 12% 15%, rgba(180, 255, 60, 0.12) 0%, transparent 70%),
+    radial-gradient(720px 620px at 88% 85%, rgba(124, 92, 255, 0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 900px 500px at 50% -10%, #28281f70 0%, transparent 60%),
+    var(--bg);
+}
+
+/* Ambient glow orbs the glass panels refract - the same soft bloom
+   language as the kinetic sculpture's core, echoed across the whole page.
+   Fixed and inert; scrolling/resizing never has to recompute them. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(420px 420px at 78% 22%, rgba(180, 255, 60, 0.08) 0%, transparent 70%),
+    radial-gradient(380px 380px at 22% 78%, rgba(124, 92, 255, 0.07) 0%, transparent 70%);
+}
+
+/* A near-invisible brushed-metal grain, the way a panel catches light
+   unevenly. Kept extremely subtle - texture, not decoration. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: repeating-linear-gradient(115deg, #fff 0px, transparent 1px, transparent 2px);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-bright);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-left);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--accent-glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
