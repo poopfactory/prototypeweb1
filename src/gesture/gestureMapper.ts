@@ -9,6 +9,18 @@ const FILTER_MAX_RANGE = 1.3
 const SPEED_DEAD_ZONE = 0.12
 const SPEED_MAX_RANGE = 1.1
 
+/**
+ * Continuous gestures (Delay/Filter/Speed) re-evaluate every tracked hand
+ * frame, but hand-tracking jitter means the computed value rarely lands on
+ * the exact same float twice even when the hand is essentially still.
+ * Skipping emits that don't move by more than this keeps the CommandBus
+ * quiet (and the audio engine's param scheduling + React re-renders idle)
+ * while a pinch is held steady, instead of spamming near-duplicate updates
+ * on every single frame - which was compounding with hand-tracking
+ * inference to jank the UI and stutter audio on mobile.
+ */
+const CONTINUOUS_VALUE_EPSILON = 0.006
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
 }
@@ -56,6 +68,10 @@ export class HandGestureController {
   private speedCommittedValue = 0
   private filterValueAtPinchStart = 0
   private speedValueAtPinchStart = 0
+  /** Last value actually emitted for each continuous gesture, to de-duplicate near-identical frames. */
+  private lastEmittedDelayWet: number | null = null
+  private lastEmittedSpeed: number | null = null
+  private lastEmittedFilter: number | null = null
 
   constructor(side: Handedness, bus: CommandBus, config: PinchConfig = DEFAULT_PINCH_CONFIG) {
     this.side = side
@@ -141,8 +157,12 @@ export class HandGestureController {
         if (result.isPinching && !result.isStale && landmarks) {
           const y = fingertipMidpointY(landmarks, 'middle')
           const wet = clamp(1 - y, 0, 1)
-          emit('DELAY_AMOUNT', { value: wet } as never)
+          if (this.lastEmittedDelayWet === null || Math.abs(wet - this.lastEmittedDelayWet) >= CONTINUOUS_VALUE_EPSILON) {
+            this.lastEmittedDelayWet = wet
+            emit('DELAY_AMOUNT', { value: wet } as never)
+          }
         }
+        if (result.justExited) this.lastEmittedDelayWet = null
         break
       }
 
@@ -161,10 +181,14 @@ export class HandGestureController {
           const movement = mapWithDeadZone(delta, SPEED_DEAD_ZONE, SPEED_MAX_RANGE)
           const value = clamp(this.speedValueAtPinchStart + movement, -1, 1)
           this.speedCommittedValue = value
-          emit('SPEED_CHANGE', { value, released: false } as never)
+          if (this.lastEmittedSpeed === null || Math.abs(value - this.lastEmittedSpeed) >= CONTINUOUS_VALUE_EPSILON) {
+            this.lastEmittedSpeed = value
+            emit('SPEED_CHANGE', { value, released: false } as never)
+          }
         }
         if (result.justExited) {
           this.speedBaselineY = null
+          this.lastEmittedSpeed = null
         }
         break
       }
@@ -181,10 +205,14 @@ export class HandGestureController {
           const movement = mapWithDeadZone(delta, FILTER_DEAD_ZONE, FILTER_MAX_RANGE)
           const value = clamp(this.filterValueAtPinchStart + movement, -1, 1)
           this.filterCommittedValue = value
-          emit('FILTER_CHANGE', { value, released: false } as never)
+          if (this.lastEmittedFilter === null || Math.abs(value - this.lastEmittedFilter) >= CONTINUOUS_VALUE_EPSILON) {
+            this.lastEmittedFilter = value
+            emit('FILTER_CHANGE', { value, released: false } as never)
+          }
         }
         if (result.justExited) {
           this.filterBaselineY = null
+          this.lastEmittedFilter = null
         }
         break
       }

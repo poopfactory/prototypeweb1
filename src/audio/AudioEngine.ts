@@ -432,7 +432,16 @@ export class AudioEngine {
         this.speedTarget = rateFromSpeedValue(clamp(command.payload.value, -1, 1))
         break
     }
-    this.notify()
+    // No notify() here on purpose. The tick() loop already calls notify()
+    // every animation frame regardless, so this would just be a duplicate,
+    // same-frame re-render - and DELAY_AMOUNT/FILTER_CHANGE/SPEED_CHANGE
+    // fire on *every tracked hand frame* while a right-hand pinch is held,
+    // which was doubling React's render rate for the whole app during
+    // continuous right-hand gestures. On mobile, with hand-tracking
+    // inference already competing for the main thread, that was enough
+    // contention to stutter both the UI and (via decode starvation) audio
+    // playback. Any state change here shows up within one frame (~16ms)
+    // via the next tick() anyway - imperceptible, and much cheaper.
   }
 
   private applyFilterImmediate(): void {
